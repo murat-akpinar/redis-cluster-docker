@@ -1,0 +1,142 @@
+services:
+  redis-node-1:
+    image: bitnami/redis-cluster:latest
+    container_name: redis-node-1
+    environment:
+      - REDIS_NODES=redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5 redis-node-6
+      - REDIS_PASSWORD=CHANGE_PASSWORD
+      - REDISCLI_AUTH=CHANGE_PASSWORD
+    ports:
+      - "6379:6379"
+      - "16379:16379"
+    networks:
+      - redis-cluster
+    volumes:
+      - ./redis_data/node-1:/bitnami/redis/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "CHANGE_PASSWORD", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis-node-2:
+    image: bitnami/redis-cluster:latest
+    container_name: redis-node-2
+    environment:
+      - REDIS_NODES=redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5 redis-node-6
+      - REDIS_PASSWORD=CHANGE_PASSWORD
+      - REDISCLI_AUTH=CHANGE_PASSWORD
+    ports:
+      - "6380:6379"
+      - "16380:16379"
+    networks:
+      - redis-cluster
+    volumes:
+      - ./redis_data/node-2:/bitnami/redis/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "CHANGE_PASSWORD", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis-node-3:
+    image: bitnami/redis-cluster:latest
+    container_name: redis-node-3
+    environment:
+      - REDIS_NODES=redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5 redis-node-6
+      - REDIS_PASSWORD=CHANGE_PASSWORD
+      - REDISCLI_AUTH=CHANGE_PASSWORD
+    ports:
+      - "6381:6379"
+      - "16381:16379"
+    networks:
+      - redis-cluster
+    volumes:
+      - ./redis_data/node-3:/bitnami/redis/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "CHANGE_PASSWORD", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis-node-4:
+    image: bitnami/redis-cluster:latest
+    container_name: redis-node-4
+    environment:
+      - REDIS_NODES=redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5 redis-node-6
+      - REDIS_PASSWORD=CHANGE_PASSWORD
+      - REDISCLI_AUTH=CHANGE_PASSWORD
+    ports:
+      - "6382:6379"
+      - "16382:16379"
+    networks:
+      - redis-cluster
+    volumes:
+      - ./redis_data/node-4:/bitnami/redis/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "CHANGE_PASSWORD", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis-node-5:
+    image: bitnami/redis-cluster:latest
+    container_name: redis-node-5
+    environment:
+      - REDIS_NODES=redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5 redis-node-6
+      - REDIS_PASSWORD=CHANGE_PASSWORD
+      - REDISCLI_AUTH=CHANGE_PASSWORD
+    ports:
+      - "6383:6379"
+      - "16383:16379"
+    networks:
+      - redis-cluster
+    volumes:
+      - ./redis_data/node-5:/bitnami/redis/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "CHANGE_PASSWORD", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis-node-6:
+    image: bitnami/redis-cluster:latest
+    container_name: redis-node-6
+    environment:
+      - REDIS_NODES=redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5 redis-node-6
+      - REDIS_PASSWORD=CHANGE_PASSWORD
+      - REDISCLI_AUTH=CHANGE_PASSWORD
+    ports:
+      - "6384:6379"
+      - "16384:16379"
+    networks:
+      - redis-cluster
+    volumes:
+      - ./redis_data/node-6:/bitnami/redis/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "CHANGE_PASSWORD", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis-cluster-init:
+    image: bitnami/redis:latest
+    container_name: redis-cluster-init
+    depends_on:
+      - redis-node-1
+      - redis-node-2
+      - redis-node-3
+      - redis-node-4
+      - redis-node-5
+      - redis-node-6
+    networks:
+      - redis-cluster
+    environment:
+      - REDISCLI_AUTH=CHANGE_PASSWORD
+    volumes:
+      - ./init-cluster.sh:/usr/local/bin/init-cluster.sh
+    entrypoint: ["/bin/bash", "/usr/local/bin/init-cluster.sh"]
+
+networks:
+  redis-cluster:
+    driver: bridge
